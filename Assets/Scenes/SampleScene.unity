@@ -441,6 +441,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1161985920, guid: 19519c45be980dc46b8ed1b4253659af, type: 3}
+      propertyPath: thrust
+      value: 700
+      objectReference: {fileID: 0}
+    - target: {fileID: 1161985920, guid: 19519c45be980dc46b8ed1b4253659af, type: 3}
+      propertyPath: rotationSpeed
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 3136749988298442323, guid: 19519c45be980dc46b8ed1b4253659af, type: 3}
       propertyPath: m_Name
       value: Player
