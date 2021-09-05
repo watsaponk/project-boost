@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player
 {
     public class PlayerMovement : MonoBehaviour
     {
         [SerializeField] private float thrust = 1f;
-        [SerializeField] private float rotationSpeed = 1;
+        [SerializeField] private float rotationThrust = 1;
 
         private Rigidbody _rigidbody;
 
@@ -30,8 +31,23 @@ namespace Player
 
         private void ProcessRotation()
         {
-            float rotate = rotationSpeed * Time.deltaTime * Input.GetAxis("Horizontal") * -1;
-            transform.Rotate(0, 0, rotate);
+            if (Input.GetKey(KeyCode.A))
+            {
+                ApplyRotation(1);
+            }
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                ApplyRotation(-1);
+            }
+        }
+
+        private void ApplyRotation(float directionMultiply)
+        {
+            _rigidbody.freezeRotation = true;
+            transform.Rotate(0, 0, rotationThrust * Time.deltaTime * directionMultiply);
+            _rigidbody.freezeRotation = false;
         }
     }
+    
 }
