@@ -9,10 +9,12 @@ namespace Player
         [SerializeField] private float rotationThrust = 1;
 
         private Rigidbody _rigidbody;
+        private AudioSource _audioSource;
 
         private void Start()
         {
             _rigidbody = GetComponent<Rigidbody>();
+            _audioSource = GetComponent<AudioSource>();
         }
 
         private void Update()
@@ -26,6 +28,13 @@ namespace Player
             if (Input.GetKey(KeyCode.Space))
             {
                 _rigidbody.AddRelativeForce(Vector3.up * thrust * Time.deltaTime);
+                if (!_audioSource.isPlaying)
+                    _audioSource.Play();
+            }
+            else
+            {
+                if(_audioSource.isPlaying)
+                    _audioSource.Stop();
             }
         }
 
