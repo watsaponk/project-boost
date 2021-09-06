@@ -1,19 +1,31 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Player
 {
     public class PlayerCollision : MonoBehaviour
     {
+        [SerializeField] private AudioClip finishSFX;
+        [SerializeField] private AudioClip detroyedSFX;
+
+        private AudioSource _audioSource;
+
+        private bool isTransitioning;
+
+        private void Start()
+        {
+            isTransitioning = false;
+            _audioSource = GetComponent<AudioSource>();
+        }
+
         private void OnCollisionEnter(Collision other)
         {
-            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
             switch (other.gameObject.tag)
             {
                 case "Finish":
                 {
-                    GetComponent<PlayerMovement>().enabled = false;
-                    Invoke(nameof(LoadNextScene), 1f);
+                    ExecuteAction(nameof(LoadNextScene), finishSFX);
                     break;
                 }
                 case "Friendly":
@@ -28,11 +40,23 @@ namespace Player
                 }
                 default:
                 {
-                    GetComponent<PlayerMovement>().enabled = false;
-                    Invoke(nameof(RespawnLevel), 1f);
+                    ExecuteAction(nameof(RespawnLevel), detroyedSFX);
                     break;
                 }
             }
+        }
+
+        private void ExecuteAction(string method, AudioClip sfx)
+        {
+            if (!isTransitioning)
+            {
+                _audioSource.Stop();
+                _audioSource.PlayOneShot(sfx);
+            }
+
+            isTransitioning = true;
+            GetComponent<PlayerMovement>().enabled = false;
+            Invoke(method, 1f);
         }
 
         private void RespawnLevel()

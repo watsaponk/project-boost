@@ -7,6 +7,7 @@ namespace Player
     {
         [SerializeField] private float thrust = 1f;
         [SerializeField] private float rotationThrust = 1;
+        [SerializeField] private AudioClip boostSFX;
 
         private Rigidbody _rigidbody;
         private AudioSource _audioSource;
@@ -29,7 +30,7 @@ namespace Player
             {
                 _rigidbody.AddRelativeForce(Vector3.up * thrust * Time.deltaTime);
                 if (!_audioSource.isPlaying)
-                    _audioSource.Play();
+                    _audioSource.PlayOneShot(boostSFX);
             }
             else
             {
