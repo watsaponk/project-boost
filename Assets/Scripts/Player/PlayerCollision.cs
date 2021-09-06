@@ -12,13 +12,8 @@ namespace Player
             {
                 case "Finish":
                 {
-                    int nextSceneIndex = currentSceneIndex + 1;
-                    if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
-                    {
-                        nextSceneIndex = 0;
-                    }
-                    
-                    SceneManager.LoadScene(nextSceneIndex);
+                    GetComponent<PlayerMovement>().enabled = false;
+                    Invoke(nameof(LoadNextScene), 1f);
                     break;
                 }
                 case "Friendly":
@@ -33,10 +28,29 @@ namespace Player
                 }
                 default:
                 {
-                    SceneManager.LoadScene(currentSceneIndex);
+                    GetComponent<PlayerMovement>().enabled = false;
+                    Invoke(nameof(RespawnLevel), 1f);
                     break;
                 }
             }
+        }
+
+        private void RespawnLevel()
+        {
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(currentSceneIndex);
+        }
+
+        private void LoadNextScene()
+        {
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            int nextSceneIndex = currentSceneIndex + 1;
+            if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
+            {
+                nextSceneIndex = 0;
+            }
+
+            SceneManager.LoadScene(nextSceneIndex);
         }
     }
 }
