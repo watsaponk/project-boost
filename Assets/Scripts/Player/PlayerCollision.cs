@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Player
@@ -8,11 +7,18 @@ namespace Player
     {
         private void OnCollisionEnter(Collision other)
         {
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
             switch (other.gameObject.tag)
             {
                 case "Finish":
                 {
-                    Debug.Log("Finish");
+                    int nextSceneIndex = currentSceneIndex + 1;
+                    if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
+                    {
+                        nextSceneIndex = 0;
+                    }
+                    
+                    SceneManager.LoadScene(nextSceneIndex);
                     break;
                 }
                 case "Friendly":
@@ -27,8 +33,7 @@ namespace Player
                 }
                 default:
                 {
-                    Debug.Log("Destroy");
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                    SceneManager.LoadScene(currentSceneIndex);
                     break;
                 }
             }
