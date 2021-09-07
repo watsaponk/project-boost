@@ -8,6 +8,8 @@ namespace Player
     {
         [SerializeField] private AudioClip finishSFX;
         [SerializeField] private AudioClip detroyedSFX;
+        [SerializeField] private ParticleSystem finishParticle;
+        [SerializeField] private ParticleSystem destroyedParticle;
 
         private AudioSource _audioSource;
 
@@ -25,7 +27,7 @@ namespace Player
             {
                 case "Finish":
                 {
-                    ExecuteAction(nameof(LoadNextScene), finishSFX);
+                    ExecuteAction(nameof(LoadNextScene), finishSFX, finishParticle);
                     break;
                 }
                 case "Friendly":
@@ -40,18 +42,20 @@ namespace Player
                 }
                 default:
                 {
-                    ExecuteAction(nameof(RespawnLevel), detroyedSFX);
+                    ExecuteAction(nameof(RespawnLevel), detroyedSFX, destroyedParticle);
                     break;
                 }
             }
         }
 
-        private void ExecuteAction(string method, AudioClip sfx)
+        private void ExecuteAction(string method, AudioClip sfx, ParticleSystem particle)
         {
             if (!isTransitioning)
             {
                 _audioSource.Stop();
                 _audioSource.PlayOneShot(sfx);
+                particle.Stop();
+                particle.Play();
             }
 
             isTransitioning = true;
