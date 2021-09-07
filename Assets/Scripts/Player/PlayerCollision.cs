@@ -13,16 +13,38 @@ namespace Player
 
         private AudioSource _audioSource;
 
-        private bool isTransitioning;
+        private bool _isTransitioning;
+        private bool _isEnableCollision = true;
 
         private void Start()
         {
-            isTransitioning = false;
+            _isTransitioning = false;
             _audioSource = GetComponent<AudioSource>();
+        }
+
+        private void Update()
+        {
+            DebugModeKeyHandler();
+        }
+
+        private void DebugModeKeyHandler()
+        {
+#if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                LoadNextScene();
+            }
+            else if (Input.GetKeyDown(KeyCode.C))
+            {
+                _isEnableCollision = !_isEnableCollision;
+            }
+#endif
         }
 
         private void OnCollisionEnter(Collision other)
         {
+            if (!_isEnableCollision) return;
+
             switch (other.gameObject.tag)
             {
                 case "Finish":
@@ -50,7 +72,7 @@ namespace Player
 
         private void ExecuteAction(string method, AudioClip sfx, ParticleSystem particle)
         {
-            if (!isTransitioning)
+            if (!_isTransitioning)
             {
                 _audioSource.Stop();
                 _audioSource.PlayOneShot(sfx);
@@ -58,7 +80,7 @@ namespace Player
                 particle.Play();
             }
 
-            isTransitioning = true;
+            _isTransitioning = true;
             GetComponent<PlayerMovement>().enabled = false;
             Invoke(method, 1f);
         }
