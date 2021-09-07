@@ -8,6 +8,9 @@ namespace Player
         [SerializeField] private float thrust = 1f;
         [SerializeField] private float rotationThrust = 1;
         [SerializeField] private AudioClip boostSFX;
+        [SerializeField] private ParticleSystem mainBoostParticle;
+        [SerializeField] private ParticleSystem leftBoostParticle;
+        [SerializeField] private ParticleSystem rightBoostParticles;
 
         private Rigidbody _rigidbody;
         private AudioSource _audioSource;
@@ -31,11 +34,15 @@ namespace Player
                 _rigidbody.AddRelativeForce(Vector3.up * thrust * Time.deltaTime);
                 if (!_audioSource.isPlaying)
                     _audioSource.PlayOneShot(boostSFX);
+
+                if (!mainBoostParticle.isPlaying)
+                    mainBoostParticle.Play();
             }
             else
             {
-                if(_audioSource.isPlaying)
+                if (_audioSource.isPlaying)
                     _audioSource.Stop();
+                mainBoostParticle.Stop();
             }
         }
 
@@ -43,21 +50,27 @@ namespace Player
         {
             if (Input.GetKey(KeyCode.A))
             {
-                ApplyRotation(1);
+                ApplyRotation(1, rightBoostParticles);
             }
-
-            if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.D))
             {
-                ApplyRotation(-1);
+                ApplyRotation(-1, leftBoostParticle);
+            }
+            else
+            {
+                rightBoostParticles.Stop();
+                leftBoostParticle.Stop();
             }
         }
 
-        private void ApplyRotation(float directionMultiply)
+        private void ApplyRotation(float directionMultiply, ParticleSystem particle)
         {
+            if(!particle.isPlaying)
+                particle.Play();
+
             _rigidbody.freezeRotation = true;
             transform.Rotate(0, 0, rotationThrust * Time.deltaTime * directionMultiply);
             _rigidbody.freezeRotation = false;
         }
     }
-    
 }
